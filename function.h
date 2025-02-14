@@ -1,23 +1,16 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
-void libraryMenu();  
-void addBook();  
+#include "datatype.h"
+
+void displayMenu();
+void displayBooks(Book books[], int count);
+void addBook(Book books[], int *count);
+void editBook(Book books[], int count);
+void deleteBook(Book books[], int *count);
+void searchBook(Book books[], int count);
+void sortBooks(Book books[], int count);
+void saveToFile(Book books[], int count);
+void loadFromFile(Book books[], int *count);
 
 #endif
-//ham them sach
-void addBook();
-//ham danh sach sach
-void displayBooks();
-//ham menu chinh
-void mainMenu();
-//ham menu thu vien
-void libraryMenu();
-//ham sua sach
-void editBook();
-//ham xoa sach
-void deleteBook();
-//ham sap xep sach theo gia tien
-void sortBooks();
-extern int bookCount;
-extern Book book[];

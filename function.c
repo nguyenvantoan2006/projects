@@ -1,217 +1,157 @@
-//noi khai trien ham
+/* function.c */
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include "datatype.h"
-struct Book book[MAX_BOOK];
+#include "function.h"
 
-int bookCount = 0;
-//ham menu chinh
-void mainMenu(){
-	int choice;
-	while(1){
-	system("cls");
-    printf("***Library Management System Using C***\n");
-    printf("\n\t   CHOOSE THE ROLE\n");
-    printf("\t======================\n");
-    printf("\t[1] Library Management\n");
-    printf("\t[2] Customer Management\n");
-    printf("\t[3] Exit\n");
-    printf("\t======================\n");
-    printf("\tEnter your choice: ");
-    scanf("%d", &choice);
-    switch (choice) {
-            case 1:
-            	system("cls");
-                libraryMenu();
-                break;
-            case 2:
-            	system("cls");
-                break;
-			case 3:
-				exit(0);     
-            default:
-            	system("cls");
-                printf("Invalid choice! Please try again.\n");
-        }
-	}
+void displayMenu() {
+    printf("\n===== Quan ly Sach =====\n");
+    printf("1. Hien thi danh sach sach\n");
+    printf("2. Them sach\n");
+    printf("3. Sua thong tin sach\n");
+    printf("4. Xoa sach\n");
+    printf("5. Tim kiem sach theo ten\n");
+    printf("6. Sap xep sach\n");
+    printf("7. Luu du lieu vao file\n");
+    printf("8. Thoat\n");
+    printf("Chon mot lua chon: ");
 }
-//ham menu thu vien
-void libraryMenu(){
-	int select;
-	while(1){
-    printf("***Library Management System Using C***\n");
-    printf("\n\t\tMENU\n");
-    printf("\t======================\n");
-    printf("\t[1] Add Book\n");
-    printf("\t[2] Display Book List\n");
-    printf("\t[3] Edit Book\n");
-    printf("\t[4] Delete Book\n");
-    printf("\t[5] Sort Book\n");
-    printf("\t[6] Return\n");
-    printf("\t======================\n");
-    printf("\tEnter your choice: ");
-    scanf("%d", &select);
-    switch (select) {
-            case 1:
-                addBook();
-                break;
-            case 2:
-                displayBooks();
-                break;
-			case 3:
-				editBook();
-				break;
-			case 4:
-				deleteBook();
-				break;
-			case 5:
-				sortBooks();
-				break;
-			case 6:
-				break;     
-            default:
-            	system("cls");
-                printf("Invalid choice! Please try again.\n");
-        }
-	}
-}   
-//ham them sach
-void addBook() {
-	int back;
-	system("cls");
-		if (bookCount >= MAX_BOOK) {
-        	printf("\nThe library is full!\n");
-        	return;
-        }
-	printf("\nEnter new book details:\n");
-    printf("Book ID: "); 
-	scanf("%s", book[bookCount].bookId);
-    printf("Title: "); 
-	scanf("%s", book[bookCount].title);
-    printf("Author: "); 
-	scanf("%s", book[bookCount].author);
-    printf("Quantity: "); 
-	scanf("%d", &book[bookCount].quantity);
-    printf("Price: "); 
-	scanf("%d", &book[bookCount].price);
-    printf("Publication Date (dd/mm/yyyy): ");
-    scanf("%d %d %d", &book[bookCount].publication.day, &book[bookCount].publication.month, &book[bookCount].publication.year);
-    bookCount++;
-    printf("Book added successfully!\n\n");
-    do {
-    printf("\nEnter 0 to go back to the main menu: ");
-    scanf("%d", &back);
-    if (back == 0){
-    	system("cls");
-    	}
-	}while(back != 0);
-}
-//ham danh sach sach
-void displayBooks() {
-	int back;
-	system("cls");
-	if (bookCount == 0) {
-        printf("No books available in the library.\n\n");
-    	}else{
-	printf("\n\t\t**** All Book ****\n\n");
-printf("|==========|==============================|====================|==========|==========|==========|\n");
-    printf("|%-10s|%-30s|%-20s|%-10s|%-10s|%-10s|\n", "Book ID", "Title", "Author", "Quantity", "Price", "Pub Date");
-    printf("|==========|==============================|====================|==========|==========|==========|\n");
+
+void displayBooks(Book books[], int count) {
+    printf("\nDanh sach sach:\n");
     int i;
-    for(i = 0; i < bookCount; i++) {
-    	printf("|%-10s|%-30s|%-20s|%-10d|%-10d|%02d/%02d/%04d|\n",
-               book[i].bookId, book[i].title, book[i].author,
-               book[i].quantity, book[i].price,
-               book[i].publication.day, book[i].publication.month, book[i].publication.year);
-        printf("|----------|------------------------------|--------------------|----------|----------|----------|\n");
-			}
-		}
-		do {
-		printf("\nEnter 0 to go back to the main menu: ");
-    	scanf("%d", &back);
-    	if (back == 0){
-    	system("cls");
-    	}
-	}while(back != 0);
+    for ( i = 0; i < count; i++) {
+        printf("ID: %d | Ten: %s | Gia: %.2f\n", books[i].id, books[i].name, books[i].price);
+    }
 }
-//ham sua sach
-void editBook() {
-	int back;
-    char editId[10];
-    int found = 0;
-    system("cls");
-    printf("\nEnter the Book ID to edit: ");
-    scanf("%s", editId);
-//tim sach theo ID
-	int i;
-    for(i = 0; i < bookCount; i++) {
-        if (strcmp(book[i].bookId, editId) == 0) {
+
+void addBook(Book books[], int *count) {
+    if (*count >= MAX_BOOKS) {
+        printf("Khong the them sach, du lieu da day!\n");
+        return;
+    }
+    printf("Nhap ID: ");
+    scanf("%d", &books[*count].id);
+    getchar(); // Xoa bo dem
+    printf("Nhap ten sach: ");
+    fgets(books[*count].name, MAX_NAME_LENGTH, stdin);
+    books[*count].name[strcspn(books[*count].name, "\n")] = 0;
+    printf("Nhap gia: ");
+    scanf("%lf", &books[*count].price);
+    getchar(); // Xoa bo dem
+    (*count)++;
+    printf("Them sach thanh cong!\n");
+}
+
+void editBook(Book books[], int count) {
+    int id, found = 0;
+    printf("Nhap ID sach can sua: ");
+    scanf("%d", &id);
+    getchar();
+    int i;
+    for ( i = 0; i < count; i++) {
+        if (books[i].id == id) {
             found = 1;
-            printf("\nCurrent Book Details:\n");
-            printf("Book ID: %s\n", book[i].bookId);
-            printf("Title: %s\n", book[i].title);
-            printf("Author: %s\n", book[i].author);
-            printf("Quantity: %d\n", book[i].quantity);
-            printf("Price: %d\n", book[i].price);
-            printf("Publication Date: %02d/%02d/%04d\n", book[i].publication.day, book[i].publication.month, book[i].publication.year);
-            printf("\nEnter new details:\n");
-            printf("New Title: ");
-            scanf("%s", book[i].title);
-            printf("New Author: ");
-            scanf("%s", book[i].author);
-            printf("New Quantity: ");
-            scanf("%d", &book[i].quantity);
-            printf("New Price: ");
-            scanf("%d", &book[i].price);
-            printf("New Publication Date (dd/mm/yyyy): ");
-            scanf("%d %d %d", &book[i].publication.day, &book[i].publication.month, &book[i].publication.year);
-            printf("\nBook details updated successfully!\n");
-        }
-    }
-    if (!found) {
-    	system("cls");
-        printf("\nBook ID not found!\n");
-    }
-    do {
-		printf("\nEnter 0 to go back to the main menu: ");
-    	scanf("%d", &back);
-    if (back == 0){
-    	system("cls");
-    	}
-	}while(back != 0);
-}
-//ham xoa sach
-void deleteBook() {
-    int back;
-    system("cls");
-    char bookId[10];
-
-    printf("\nEnter Book ID to delete: ");
-    scanf("%9s", bookId); // Tránh l?i tràn b? nh?
-
-    int index = -1;
-    int i;
-    int bookCount=0;
-     
-    for (i = 0; i < bookCount; i++) {
-        if (strcmp(book[i].bookId, bookId) == 0) {
-            index = i;
+            printf("Nhap ten sach moi: ");
+            fgets(books[i].name, MAX_NAME_LENGTH, stdin);
+            books[i].name[strcspn(books[i].name, "\n")] = 0;
+            printf("Nhap gia moi: ");
+            scanf("%lf", &books[i].price);
+            getchar();
+            printf("Sua thong tin sach thanh cong!\n");
             break;
         }
     }
+    if (!found) printf("ID sach khong ton tai!\n");
+}
 
-    if (index < 0 || index >= bookCount) {
-        printf("\nBook ID not found!\n");
+void deleteBook(Book books[], int *count) {
+    int id, found = 0;
+    printf("Nhap ID sach can xoa: ");
+    scanf("%d", &id);
+    getchar();
+    int i;
+    for ( i = 0; i < *count; i++) {
+        if (books[i].id == id) {
+            found = 1;
+            int j;
+            for ( j = i; j < *count - 1; j++) {
+                books[j] = books[j + 1];
+            }
+            (*count)--;
+            printf("Xoa sach thanh cong!\n");
+            break;
+        }
+    }
+    if (!found) printf("ID sach khong ton tai!\n");
+}
+
+void searchBook(Book books[], int count) {
+    char keyword[MAX_NAME_LENGTH];
+    int found = 0;
+    printf("Nhap ten sach can tim: ");
+    getchar();
+    fgets(keyword, MAX_NAME_LENGTH, stdin);
+    keyword[strcspn(keyword, "\n")] = 0;
+    printf("\nKet qua tim kiem:\n");
+    int i;
+    for (i = 0; i < count; i++) {
+        if (strstr(books[i].name, keyword)) {
+            printf("ID: %d | Ten: %s | Gia: %.2f\n", books[i].id, books[i].name, books[i].price);
+            found = 1;
+        }
+    }
+    if (!found) printf("Khong tim thay sach nao!\n");
+}
+
+void sortBooks(Book books[], int count) {
+    int choice;
+    printf("Chon cach sap xep:\n");
+    printf("1. Gia tang dan\n");
+    printf("2. Gia giam dan\n");
+    printf("Lua chon: ");
+    scanf("%d", &choice);
+    getchar();
+    int i;
+
+    for (i = 0; i < count - 1; i++) {
+    	int j;
+        for ( j = i + 1; j < count; j++) {
+            if ((choice == 1 && books[i].price > books[j].price) || (choice == 2 && books[i].price < books[j].price)) {
+                Book temp = books[i];
+                books[i] = books[j];
+                books[j] = temp;
+            }
+        }
+    }
+    printf("Sap xep sach thanh cong!\n");
+    displayBooks(books, count);
+}
+
+void saveToFile(Book books[], int count) {
+    FILE *file = fopen("books.txt", "w");
+    if (!file) {
+        printf("Khong the mo file de ghi!\n");
         return;
     }
-
-    // Xóa sách b?ng cách d?ch chuy?n m?ng
-    for (i = index; i < bookCount - 1; i++) {
-        book[i] = book[i + 1];
+    int i;
+    for ( i = 0; i < count; i++) {
+        fprintf(file, "%d,%s,%.2f\n", books[i].id, books[i].name, books[i].price);
     }
-
-    bookCount--; // Gi?m s? lu?ng sách sau khi xóa
-
-    printf("\nBook deleted successfully!\n");
+    fclose(file);
+    printf("Luu du lieu thanh cong!\n");
 }
+
+void loadFromFile(Book books[], int *count) {
+    FILE *file = fopen("books.txt", "r");
+    if (!file) {
+        printf("Khong the mo file de doc!\n");
+        return;
+    }
+    *count = 0;
+    while (fscanf(file, "%d,%99[^,],%lf", &books[*count].id, books[*count].name, &books[*count].price) == 3) {
+        (*count)++;
+    }
+    fclose(file);
+    printf("Tai du lieu thanh cong!\n");
+}
+
